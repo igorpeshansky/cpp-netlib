@@ -23,6 +23,7 @@
 #include <boost/asio/write.hpp>
 #include <boost/network/protocol/http/algorithms/linearize.hpp>
 #include <boost/network/protocol/http/server/request_parser.hpp>
+#include <boost/network/protocol/http/status.hpp>
 #include <boost/network/protocol/stream_handler.hpp>
 #include <boost/network/utils/thread_pool.hpp>
 #include <boost/optional.hpp>
@@ -71,32 +72,7 @@ extern void parse_headers(std::string const& input,
 template <class Tag, class Handler>
 struct async_connection
     : std::enable_shared_from_this<async_connection<Tag, Handler> > {
-  /// The set of known status codes for HTTP server responses.
-  enum status_t {
-    ok = 200,
-    created = 201,
-    accepted = 202,
-    no_content = 204,
-    partial_content = 206,
-    multiple_choices = 300,
-    moved_permanently = 301,
-    moved_temporarily = 302,
-    not_modified = 304,
-    bad_request = 400,
-    unauthorized = 401,
-    forbidden = 403,
-    not_found = 404,
-    not_supported = 405,
-    not_acceptable = 406,
-    request_timeout = 408,
-    precondition_failed = 412,
-    unsatisfiable_range = 416,
-    internal_server_error = 500,
-    not_implemented = 501,
-    bad_gateway = 502,
-    service_unavailable = 503,
-    space_unavailable = 507
-  };
+  typedef boost::network::http::status_t status_t;
 
   typedef typename string<Tag>::type string_type;
   typedef basic_request<Tag> request;
