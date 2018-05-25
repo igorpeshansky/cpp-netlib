@@ -203,13 +203,13 @@ struct http_async_connection
  private:
   void set_errors(boost::system::error_code const& ec, body_callback_function_type callback) {
     boost::system::system_error error(ec);
-    this->version_promise.set_exception(boost::copy_exception(error));
-    this->status_promise.set_exception(boost::copy_exception(error));
-    this->status_message_promise.set_exception(boost::copy_exception(error));
-    this->headers_promise.set_exception(boost::copy_exception(error));
-    this->source_promise.set_exception(boost::copy_exception(error));
-    this->destination_promise.set_exception(boost::copy_exception(error));
-    this->body_promise.set_exception(boost::copy_exception(error));
+    this->version_promise.set_exception(std::make_exception_ptr(error));
+    this->status_promise.set_exception(std::make_exception_ptr(error));
+    this->status_message_promise.set_exception(std::make_exception_ptr(error));
+    this->headers_promise.set_exception(std::make_exception_ptr(error));
+    this->source_promise.set_exception(std::make_exception_ptr(error));
+    this->destination_promise.set_exception(std::make_exception_ptr(error));
+    this->body_promise.set_exception(std::make_exception_ptr(error));
     if ( callback )
       callback( boost::iterator_range<typename std::array<typename char_<Tag>::type, 1024>::const_iterator>(), ec );
     this->timer_.cancel();

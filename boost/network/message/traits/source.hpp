@@ -11,8 +11,8 @@
 #include <boost/network/support/is_sync.hpp>
 #include <boost/network/tags.hpp>
 #include <boost/network/traits/string.hpp>
-#include <boost/thread/future.hpp>
 #include <boost/type_traits/is_same.hpp>
+#include <future>
 
 namespace boost {
 namespace network {
@@ -24,7 +24,7 @@ struct unsupported_tag;
 template <class Message>
 struct source
     : mpl::if_<is_async<typename Message::tag>,
-               boost::shared_future<typename string<typename Message::tag>::type>,
+               std::shared_future<typename string<typename Message::tag>::type>,
                typename mpl::if_<
                    mpl::or_<is_sync<typename Message::tag>,
                             is_same<typename Message::tag,

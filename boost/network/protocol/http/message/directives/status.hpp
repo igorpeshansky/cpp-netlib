@@ -11,10 +11,10 @@
 #include <boost/mpl/if.hpp>
 #include <boost/network/support/is_async.hpp>
 #include <boost/network/tags.hpp>
-#include <boost/thread/future.hpp>
 #include <boost/variant/apply_visitor.hpp>
 #include <boost/variant/static_visitor.hpp>
 #include <boost/variant/variant.hpp>
+#include <future>
 
 namespace boost {
 namespace network {
@@ -25,18 +25,18 @@ struct basic_response;
 
 struct status_directive {
 
-  boost::variant<std::uint16_t, boost::shared_future<std::uint16_t> >
+  boost::variant<std::uint16_t, std::shared_future<std::uint16_t> >
       status_;
 
   explicit status_directive(std::uint16_t status) : status_(status) {}
 
-  explicit status_directive(boost::shared_future<std::uint16_t> const &status)
+  explicit status_directive(std::shared_future<std::uint16_t> const &status)
       : status_(status) {}
 
   status_directive(status_directive const &other) : status_(other.status_) {}
 
   template <class Tag>
-  struct value : mpl::if_<is_async<Tag>, boost::shared_future<std::uint16_t>,
+  struct value : mpl::if_<is_async<Tag>, std::shared_future<std::uint16_t>,
                           std::uint16_t> {};
 
   template <class Tag>

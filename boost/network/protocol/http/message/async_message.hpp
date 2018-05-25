@@ -14,7 +14,7 @@
 
 // FIXME move this out to a trait
 #include <boost/network/detail/wrapper_base.hpp>
-#include <boost/thread/future.hpp>
+#include <future>
 #include <set>
 
 namespace boost {
@@ -55,63 +55,51 @@ struct async_message {
 
   string_type status_message() const {
     status_message_.wait();
-    if (status_message_.has_exception())
-      boost::rethrow_exception(status_message_.get_exception_ptr());
     return status_message_.get();
   }
 
-  void status_message(boost::shared_future<string_type> const& future) const {
+  void status_message(std::shared_future<string_type> const& future) const {
     status_message_ = future;
   }
 
   string_type version() const {
     version_.wait();
-    if (version_.has_exception())
-      boost::rethrow_exception(version_.get_exception_ptr());
     return version_.get();
   }
 
-  void version(boost::shared_future<string_type> const& future) const {
+  void version(std::shared_future<string_type> const& future) const {
     version_ = future;
   }
 
   std::uint16_t status() const {
     status_.wait();
-    if (status_.has_exception())
-      boost::rethrow_exception(status_.get_exception_ptr());
     return status_.get();
   }
 
-  void status(boost::shared_future<uint16_t> const& future) const {
+  void status(std::shared_future<uint16_t> const& future) const {
     status_ = future;
   }
 
   string_type source() const {
     source_.wait();
-    if (source_.has_exception())
-      boost::rethrow_exception(source_.get_exception_ptr());
     return source_.get();
   }
 
-  void source(boost::shared_future<string_type> const& future) const {
+  void source(std::shared_future<string_type> const& future) const {
     source_ = future;
   }
 
   string_type destination() const {
     destination_.wait();
-    if (destination_.has_exception())
-      boost::rethrow_exception(source_.get_exception_ptr());
     return destination_.get();
   }
 
-  void destination(boost::shared_future<string_type> const& future) const {
+  void destination(std::shared_future<string_type> const& future) const {
     destination_ = future;
   }
 
   headers_container_type const& headers() const {
     if (retrieved_headers_) return *retrieved_headers_;
-    if (headers_.has_exception())
-      boost::rethrow_exception(headers_.get_exception_ptr());
     headers_container_type raw_headers = headers_.get();
     raw_headers.insert(added_headers.begin(), added_headers.end());
     for (string_type const& key : removed_headers) {
@@ -121,8 +109,7 @@ struct async_message {
     return *retrieved_headers_;
   }
 
-  void headers(
-      boost::shared_future<headers_container_type> const& future) const {
+  void headers(std::shared_future<headers_container_type> const& future) const {
     headers_ = future;
   }
 
@@ -138,12 +125,10 @@ struct async_message {
 
   string_type body() const {
     body_.wait();
-    if (body_.has_exception())
-      boost::rethrow_exception(body_.get_exception_ptr());
     return body_.get();
   }
 
-  void body(boost::shared_future<string_type> const& future) const {
+  void body(std::shared_future<string_type> const& future) const {
     body_ = future;
   }
 
@@ -163,13 +148,13 @@ struct async_message {
   }
 
  private:
-  mutable boost::shared_future<string_type> status_message_, version_, source_,
+  mutable std::shared_future<string_type> status_message_, version_, source_,
       destination_;
-  mutable boost::shared_future<std::uint16_t> status_;
-  mutable boost::shared_future<headers_container_type> headers_;
+  mutable std::shared_future<std::uint16_t> status_;
+  mutable std::shared_future<headers_container_type> headers_;
   mutable headers_container_type added_headers;
   mutable std::set<string_type> removed_headers;
-  mutable boost::shared_future<string_type> body_;
+  mutable std::shared_future<string_type> body_;
   mutable boost::optional<headers_container_type> retrieved_headers_;
 
   friend struct boost::network::http::impl::ready_wrapper<Tag>;
